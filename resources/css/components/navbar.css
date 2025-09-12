@@ -1,0 +1,95 @@
+/* resources/css/components/navbar.css */
+
+.navbar {
+  background-color: #004080;
+  padding: 0.75rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+.navbar-logo a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-text {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.navbar-menu {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.navbar-menu li {
+  flex-shrink: 0; /* impede que o item encolha */
+}
+
+.navbar-menu li a {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  padding: 0.25rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+}
+
+.navbar-menu li a:hover,
+.navbar-menu li a:focus,
+.navbar-menu li a.active {
+  color: #ffc107;
+  font-weight: 700;
+}
+
+.navbar-menu li a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: #ffc107;
+  transition: width 0.3s ease;
+}
+
+.navbar-menu li a:hover::after,
+.navbar-menu li a:focus::after,
+.navbar-menu li a.active::after {
+  width: 100%;
+}
+
+/* Scrollbar horizontal opcional */
+.navbar-menu::-webkit-scrollbar {
+  height: 6px;
+}
+
+.navbar-menu::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 193, 7, 0.7);
+  border-radius: 3px;
+}
+
+.navbar-menu::-webkit-scrollbar-track {
+  background-color: transparent;
+}
