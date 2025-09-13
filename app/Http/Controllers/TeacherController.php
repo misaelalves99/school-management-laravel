@@ -89,6 +89,14 @@ class TeacherController extends Controller
     }
 
     /**
+     * Mostrar página de confirmação de exclusão
+     */
+    public function delete(Teacher $teacher)
+    {
+        return view('teachers.delete', compact('teacher'));
+    }
+
+    /**
      * Excluir professor
      */
     public function destroy(Teacher $teacher)

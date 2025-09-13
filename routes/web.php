@@ -13,10 +13,24 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Recursos CRUD
 Route::resource('students', StudentController::class);
+Route::get('students/{student}/delete', [StudentController::class, 'delete'])
+     ->name('students.delete');
+
 Route::resource('teachers', TeacherController::class);
+Route::get('teachers/{teacher}/delete', [TeacherController::class, 'delete'])
+     ->name('teachers.delete');
+
 Route::resource('subjects', SubjectController::class);
+Route::get('subjects/{subject}/delete', [SubjectController::class, 'delete'])
+     ->name('subjects.delete');
+
 Route::resource('classrooms', ClassroomController::class);
+Route::get('classrooms/{classroom}/delete', [ClassRoomController::class, 'delete'])
+     ->name('classrooms.delete');
+
 Route::resource('enrollments', EnrollmentController::class);
+Route::get('enrollments/{enrollment}/delete', [EnrollmentController::class, 'delete'])
+     ->name('enrollments.delete');
 
 // Redirecionamento fallback
 Route::fallback(function () {

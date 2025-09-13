@@ -74,6 +74,13 @@ class EnrollmentController extends Controller
         return redirect()->route('enrollments.index')->with('success', 'Matrícula atualizada com sucesso!');
     }
 
+    // ✅ Novo método: abre a página de confirmação de exclusão
+    public function delete(Enrollment $enrollment)
+    {
+        $enrollment->load(['student', 'classRoom']);
+        return view('enrollments.delete', compact('enrollment'));
+    }
+
     public function destroy(Enrollment $enrollment)
     {
         $this->service->delete($enrollment);

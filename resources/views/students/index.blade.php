@@ -51,11 +51,8 @@
                         <td class="actionsCell">
                             <a href="{{ route('students.show', $student->id) }}" class="btn btnInfo">Detalhes</a>
                             <a href="{{ route('students.edit', $student->id) }}" class="btn btnWarning">Editar</a>
-                            <form action="{{ route('students.destroy', $student->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btnDanger">Excluir</button>
-                            </form>
+                            <!-- Agora abre a página de confirmação -->
+                            <a href="{{ route('students.delete', $student->id) }}" class="btn btnDanger">Excluir</a>
                         </td>
                     </tr>
                     @endforeach

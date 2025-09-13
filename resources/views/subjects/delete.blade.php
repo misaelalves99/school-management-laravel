@@ -25,7 +25,6 @@
                 @method('DELETE')
                 <button type="submit" class="btnDanger btn">Excluir</button>
             </form>
-
             <a href="{{ route('subjects.index') }}" class="btnSecondary btn">Cancelar</a>
         </div>
     @endif

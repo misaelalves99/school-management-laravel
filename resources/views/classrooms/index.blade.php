@@ -45,26 +45,27 @@
         </thead>
         <tbody>
           @forelse($classRooms as $room)
-            @if(request('search') &&
-                !str_contains(strtolower($room->name), strtolower(request('search'))) &&
-                !str_contains(strtolower($room->schedule), strtolower(request('search'))) &&
-                !str_contains($room->capacity, request('search'))
-            )
+            @php
+              $search = strtolower(request('search', ''));
+              $matchesSearch = !$search || 
+                               str_contains(strtolower($room->name), $search) || 
+                               str_contains(strtolower($room->schedule), $search) || 
+                               str_contains((string)$room->capacity, $search);
+            @endphp
+
+            @if(!$matchesSearch)
               @continue
             @endif
+
             <tr>
               <td>{{ $room->id }}</td>
               <td>{{ $room->name }}</td>
               <td>{{ $room->capacity }}</td>
               <td>{{ $room->schedule }}</td>
               <td class="actionsCell">
-                <a href="{{ route('classrooms.show', $room->id) }}" class="btn btnInfo">Detalhes</a>
-                <a href="{{ route('classrooms.edit', $room->id) }}" class="btn btnWarning">Editar</a>
-                <form action="{{ route('classrooms.destroy', $room->id) }}" method="POST" style="display:inline;">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn btnDanger" onclick="return confirm('Deseja realmente excluir esta sala?')">Excluir</button>
-                </form>
+                  <a href="{{ route('classrooms.show', $room->id) }}" class="btn btnInfo">Detalhes</a>
+                  <a href="{{ route('classrooms.edit', $room->id) }}" class="btn btnWarning">Editar</a>
+                  <a href="{{ route('classrooms.delete', $room->id) }}" class="btn btnDanger">Excluir</a>
               </td>
             </tr>
           @empty

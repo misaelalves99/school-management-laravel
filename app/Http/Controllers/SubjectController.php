@@ -74,4 +74,12 @@ class SubjectController extends Controller
     {
         return view('subjects.details', compact('subject'));
     }
+
+    /**
+     * Página de confirmação de exclusão
+     */
+    public function delete(Subject $subject)
+    {
+        return view('subjects.delete', compact('subject'));
+    }
 }

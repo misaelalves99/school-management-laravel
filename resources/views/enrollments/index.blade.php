@@ -56,12 +56,8 @@
                             <td class="actionsCell">
                                 <a href="{{ route('enrollments.show', $enrollment->id) }}" class="btn btnInfo">Detalhes</a>
                                 <a href="{{ route('enrollments.edit', $enrollment->id) }}" class="btn btnWarning">Editar</a>
-                                <form action="{{ route('enrollments.destroy', $enrollment->id) }}" method="POST" style="display:inline-block;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btnDanger"
-                                        onclick="return confirm('Tem certeza que deseja excluir esta matrícula?')">Excluir</button>
-                                </form>
+                                <!-- Agora abre a página de confirmação -->
+                                <a href="{{ route('enrollments.delete', $enrollment->id) }}" class="btn btnDanger">Excluir</a>
                             </td>
                         </tr>
                     @empty

@@ -49,12 +49,7 @@
                         <td class="actionsCell">
                             <a href="{{ route('subjects.show', $subject->id) }}" class="btn btnInfo">Detalhes</a>
                             <a href="{{ route('subjects.edit', $subject->id) }}" class="btn btnWarning">Editar</a>
-                            <a href="{{ route('subjects.destroy', $subject->id) }}" onclick="event.preventDefault(); document.getElementById('delete-form-{{ $subject->id }}').submit();" class="btn btnDanger">Excluir</a>
-
-                            <form id="delete-form-{{ $subject->id }}" action="{{ route('subjects.destroy', $subject->id) }}" method="POST" style="display:none;">
-                                @csrf
-                                @method('DELETE')
-                            </form>
+                            <a href="{{ route('subjects.delete', $subject->id) }}" class="btn btnDanger">Excluir</a>
                         </td>
                     </tr>
                     @endif
