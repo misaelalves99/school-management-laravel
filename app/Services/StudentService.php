@@ -4,33 +4,29 @@
 namespace App\Services;
 
 use App\Models\Student;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 
 class StudentService
 {
     /**
-     * Listar todos os alunos
+     * Listar alunos com busca e paginação
      *
-     * @return Collection|Student[]
+     * @param string|null $search
+     * @param int $perPage
+     * @return LengthAwarePaginator
      */
-    public function all(): Collection
+    public function paginate(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        return Student::all();
-    }
+        $query = Student::query();
 
-    /**
-     * Buscar alunos por nome (opcional)
-     *
-     * @param string|null $name
-     * @return Collection|Student[]
-     */
-    public function searchByName(?string $name): Collection
-    {
-        if (!$name) {
-            return $this->all();
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('enrollment_number', 'like', "%{$search}%");
         }
 
-        return Student::where('name', 'like', "%{$name}%")->get();
+        return $query->orderBy('id', 'desc')->paginate($perPage);
     }
 
     /**
@@ -77,5 +73,15 @@ class StudentService
     public function find(int $id): ?Student
     {
         return Student::find($id);
+    }
+
+    /**
+     * Buscar todos os alunos (opcional sem paginação)
+     *
+     * @return \Illuminate\Database\Eloquent\Collection|Student[]
+     */
+    public function all()
+    {
+        return Student::all();
     }
 }

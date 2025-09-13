@@ -12,7 +12,7 @@
 <div class="container">
     @if (!$subject)
         <h2 class="title">Disciplina não encontrada</h2>
-        <a href="{{ route('subjects.index') }}" class="btnSecondary btn">Voltar</a>
+        <a href="{{ route('subjects.index') }}" class="btn btnSecondary">Voltar à Lista</a>
     @else
         <h1 class="title">Detalhes da Disciplina</h1>
 
@@ -28,12 +28,12 @@
 
         <div class="detailsRow">
             <span class="detailsLabel">Carga Horária:</span>
-            <span class="detailsValue">{{ $subject->workloadHours }} horas</span>
+            <span class="detailsValue">{{ $subject->workload_hours }} horas</span>
         </div>
 
         <div class="actions">
-            <a href="{{ route('subjects.edit', $subject->id) }}" class="btnWarning btn">Editar</a>
-            <a href="{{ route('subjects.index') }}" class="btnSecondary btn">Voltar à Lista</a>
+            <a href="{{ route('subjects.edit', $subject->id) }}" class="btn btnWarning">Editar</a>
+            <a href="{{ route('subjects.index') }}" class="btn btnSecondary">Voltar à Lista</a>
         </div>
     @endif
 </div>

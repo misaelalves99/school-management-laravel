@@ -11,7 +11,8 @@
 @section('content')
 <div class="container">
     @if(!$classRoom)
-        <p>Turma não encontrada.</p>
+        <h2 class="title">Turma não encontrada</h2>
+        <a href="{{ route('classrooms.index') }}" class="btn btnSecondary">Voltar à Lista</a>
     @else
         <h1 class="title">Detalhes da Turma</h1>
 
@@ -30,42 +31,46 @@
             <span class="detailsValue">{{ $classRoom->schedule }}</span>
         </div>
 
-        @if($classRoom->classTeacher)
-            <div class="detailsRow">
-                <span class="detailsLabel">Professor Titular:</span>
-                <span class="detailsValue">{{ $classRoom->classTeacher->name }}</span>
-            </div>
-        @endif
+        <div class="detailsRow">
+            <span class="detailsLabel">Professor Titular:</span>
+            <span class="detailsValue">
+                {{ $classRoom->classTeacher?->name ?? 'Não definido' }}
+            </span>
+        </div>
 
-        @if($classRoom->teachers->count() > 0)
-            <div class="detailsRow">
-                <span class="detailsLabel">Professores:</span>
-                <span class="detailsValue">
+        <div class="detailsRow">
+            <span class="detailsLabel">Professores Auxiliares:</span>
+            <span class="detailsValue">
+                @if($classRoom->teachers->isNotEmpty())
                     <ul>
                         @foreach($classRoom->teachers as $teacher)
                             <li>{{ $teacher->name }}</li>
                         @endforeach
                     </ul>
-                </span>
-            </div>
-        @endif
+                @else
+                    Nenhum professor auxiliar
+                @endif
+            </span>
+        </div>
 
-        @if($classRoom->subjects->count() > 0)
-            <div class="detailsRow">
-                <span class="detailsLabel">Disciplinas:</span>
-                <span class="detailsValue">
+        <div class="detailsRow">
+            <span class="detailsLabel">Disciplinas:</span>
+            <span class="detailsValue">
+                @if($classRoom->subjects->isNotEmpty())
                     <ul>
                         @foreach($classRoom->subjects as $subject)
                             <li>{{ $subject->name }}</li>
                         @endforeach
                     </ul>
-                </span>
-            </div>
-        @endif
+                @else
+                    Nenhuma disciplina atribuída
+                @endif
+            </span>
+        </div>
 
         <div class="actions">
-            <a href="{{ route('classrooms.edit', $classRoom->id) }}" class="btnWarning">Editar</a>
-            <a href="{{ route('classrooms.index') }}" class="btnSecondary">Voltar</a>
+            <a href="{{ route('classrooms.edit', $classRoom->id) }}" class="btn btnWarning">Editar</a>
+            <a href="{{ route('classrooms.index') }}" class="btn btnSecondary">Voltar à Lista</a>
         </div>
     @endif
 </div>

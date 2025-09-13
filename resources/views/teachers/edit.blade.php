@@ -12,6 +12,10 @@
 <div class="createContainer">
     <h1 class="createTitle">Editar Professor</h1>
 
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
     <form action="{{ route('teachers.update', $teacher->id) }}" method="POST" class="createForm">
         @csrf
         @method('PUT')
@@ -34,7 +38,7 @@
                     name="{{ $field['name'] }}"
                     id="{{ $field['name'] }}"
                     value="{{ old($field['name'], $teacher->{$field['name']}) }}"
-                    class="formInput @error($field['name']) formError @enderror"
+                    class="formInput @error($field['name']) is-invalid @enderror"
                 >
                 @error($field['name'])
                     <span class="formError">{{ $message }}</span>
@@ -44,10 +48,12 @@
 
         <div class="formGroup">
             <label for="subject" class="formLabel">Disciplina</label>
-            <select name="subject" id="subject" class="formInput @error('subject') formError @enderror">
+            <select name="subject" id="subject" class="formInput @error('subject') is-invalid @enderror">
                 <option value="">Selecione uma disciplina</option>
-                @foreach($subjects as $subj)
-                    <option value="{{ $subj->name }}" @selected(old('subject', $teacher->subject) == $subj->name)>{{ $subj->name }}</option>
+                @foreach ($subjects as $subj)
+                    <option value="{{ $subj->name }}" @selected(old('subject', $teacher->subject) == $subj->name)>
+                        {{ $subj->name }}
+                    </option>
                 @endforeach
             </select>
             @error('subject')
@@ -61,3 +67,4 @@
         </div>
     </form>
 </div>
+@endsection

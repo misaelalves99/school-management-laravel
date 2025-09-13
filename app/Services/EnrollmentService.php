@@ -4,12 +4,21 @@
 namespace App\Services;
 
 use App\Models\Enrollment;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class EnrollmentService
 {
-    public function paginate(int $perPage = 10)
+    public function paginate(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
-        return Enrollment::with(['student', 'classRoom'])->orderBy('id', 'desc')->paginate($perPage);
+        $query = Enrollment::with(['student', 'classRoom'])->orderBy('id', 'desc');
+
+        if ($search) {
+            $query->whereHas('student', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                  ->orWhereHas('classRoom', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                  ->orWhere('status', 'like', "%{$search}%");
+        }
+
+        return $query->paginate($perPage);
     }
 
     public function getById(int $id): ?Enrollment
@@ -42,14 +51,5 @@ class EnrollmentService
     public function delete(Enrollment $enrollment): bool
     {
         return $enrollment->delete();
-    }
-
-    public function search(string $query)
-    {
-        return Enrollment::with(['student', 'classRoom'])
-            ->whereHas('student', fn($q) => $q->where('name', 'like', "%{$query}%"))
-            ->orWhereHas('classRoom', fn($q) => $q->where('name', 'like', "%{$query}%"))
-            ->orWhere('status', 'like', "%{$query}%")
-            ->get();
     }
 }

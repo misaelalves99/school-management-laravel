@@ -21,9 +21,7 @@ class EnrollmentController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
-        $enrollments = $search
-            ? $this->service->search($search)
-            : $this->service->paginate(10);
+        $enrollments = $this->service->paginate($search, 10);
 
         return view('enrollments.index', compact('enrollments'));
     }
@@ -41,7 +39,7 @@ class EnrollmentController extends Controller
             'student_id' => 'required|exists:students,id',
             'class_room_id' => 'required|exists:class_rooms,id',
             'enrollment_date' => 'required|date',
-            'status' => 'required|string',
+            'status' => 'required|in:ativo,inativo',
         ]);
 
         $this->service->create($data);
@@ -52,7 +50,7 @@ class EnrollmentController extends Controller
     public function show(Enrollment $enrollment)
     {
         $enrollment->load(['student', 'classRoom']);
-        return view('enrollments.show', compact('enrollment'));
+        return view('enrollments.details', compact('enrollment'));
     }
 
     public function edit(Enrollment $enrollment)
@@ -68,7 +66,7 @@ class EnrollmentController extends Controller
             'student_id' => 'required|exists:students,id',
             'class_room_id' => 'required|exists:class_rooms,id',
             'enrollment_date' => 'required|date',
-            'status' => 'required|string',
+            'status' => 'required|in:ativo,inativo',
         ]);
 
         $this->service->update($enrollment, $data);

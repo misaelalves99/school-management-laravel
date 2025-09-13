@@ -1,5 +1,6 @@
 <!-- resources/views/students/details.blade.php -->
 
+{{-- resources/views/students/details.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Detalhes do Aluno')
@@ -28,12 +29,12 @@
 
         <div class="detailsRow">
             <span class="detailsLabel">Data de Nascimento:</span>
-            <span class="detailsValue">{{ $student->dateOfBirth }}</span>
+            <span class="detailsValue">{{ $student->date_of_birth }}</span>
         </div>
 
         <div class="detailsRow">
             <span class="detailsLabel">Número de Matrícula:</span>
-            <span class="detailsValue">{{ $student->enrollmentNumber }}</span>
+            <span class="detailsValue">{{ $student->enrollment_number }}</span>
         </div>
 
         <div class="detailsRow">
@@ -52,3 +53,4 @@
         </div>
     @endif
 </div>
+@endsection

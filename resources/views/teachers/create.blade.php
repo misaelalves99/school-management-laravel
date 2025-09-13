@@ -19,7 +19,7 @@
         $fields = [
             ['label' => 'Nome', 'name' => 'name', 'type' => 'text'],
             ['label' => 'Email', 'name' => 'email', 'type' => 'email'],
-            ['label' => 'Data de Nascimento', 'name' => 'dateOfBirth', 'type' => 'date'],
+            ['label' => 'Data de Nascimento', 'name' => 'date_of_birth', 'type' => 'date'],
             ['label' => 'Telefone', 'name' => 'phone', 'type' => 'tel'],
             ['label' => 'Endereço', 'name' => 'address', 'type' => 'text'],
         ];
@@ -33,17 +33,17 @@
                 id="{{ $field['name'] }}"
                 name="{{ $field['name'] }}"
                 value="{{ old($field['name']) }}"
-                class="formInput"
+                class="formInput @error($field['name']) is-invalid @enderror"
             />
             @error($field['name'])
-            <span class="formError">{{ $message }}</span>
+                <span class="formError">{{ $message }}</span>
             @enderror
         </div>
         @endforeach
 
         <div class="formGroup">
             <label for="subject" class="formLabel">Disciplina</label>
-            <select name="subject" id="subject" class="formInput">
+            <select name="subject" id="subject" class="formInput @error('subject') is-invalid @enderror">
                 <option value="">Selecione uma disciplina</option>
                 @foreach ($subjects as $subject)
                     <option value="{{ $subject->name }}" {{ old('subject') === $subject->name ? 'selected' : '' }}>
@@ -52,7 +52,7 @@
                 @endforeach
             </select>
             @error('subject')
-            <span class="formError">{{ $message }}</span>
+                <span class="formError">{{ $message }}</span>
             @enderror
         </div>
 

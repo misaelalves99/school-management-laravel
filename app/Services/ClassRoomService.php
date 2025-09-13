@@ -1,40 +1,38 @@
 <?php
-// app/Http/Services/ClassRoomService.php
+// app/Services/ClassRoomService.php
 
 namespace App\Services;
 
 use App\Models\ClassRoom;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ClassRoomService
 {
     /**
-     * Pagina as salas com filtros opcionais.
+     * Retorna todas as salas
      */
-    public function paginate(?string $term = null, int $perPage = 10)
+    public function all(): Collection
     {
-        $query = ClassRoom::with(['subjects', 'teachers', 'classTeacher']);
+        return ClassRoom::with(['subjects', 'teachers', 'classTeacher'])->get();
+    }
 
-        if ($term) {
-            $query->where(function ($q) use ($term) {
-                $q->where('name', 'like', "%{$term}%")
-                  ->orWhere('schedule', 'like', "%{$term}%")
-                  ->orWhere('capacity', $term);
-            });
+    /**
+     * Retorna uma sala pelo ID
+     */
+    public function find(int $id): ClassRoom
+    {
+        $classRoom = ClassRoom::with(['subjects', 'teachers', 'classTeacher'])->find($id);
+
+        if (!$classRoom) {
+            throw new ModelNotFoundException("Sala com ID $id não encontrada.");
         }
 
-        return $query->orderBy('id', 'desc')->paginate($perPage);
+        return $classRoom;
     }
 
     /**
-     * Retorna uma sala pelo ID com relacionamentos carregados.
-     */
-    public function find(int $id): ?ClassRoom
-    {
-        return ClassRoom::with(['subjects', 'teachers', 'classTeacher'])->find($id);
-    }
-
-    /**
-     * Cria uma nova sala e sincroniza professores e disciplinas.
+     * Cria uma nova sala
      */
     public function create(array $data): ClassRoom
     {
@@ -45,23 +43,24 @@ class ClassRoomService
             'class_teacher_id' => $data['class_teacher_id'] ?? null,
         ]);
 
-        // Sincroniza disciplinas e professores auxiliares (se existirem)
-        if (!empty($data['subject_ids']) && is_array($data['subject_ids'])) {
-            $classRoom->subjects()->sync($data['subject_ids']);
+        if (!empty($data['teacher_ids'])) {
+            $classRoom->teachers()->sync($data['teacher_ids']);
         }
 
-        if (!empty($data['teacher_ids']) && is_array($data['teacher_ids'])) {
-            $classRoom->teachers()->sync($data['teacher_ids']);
+        if (!empty($data['subject_ids'])) {
+            $classRoom->subjects()->sync($data['subject_ids']);
         }
 
         return $classRoom;
     }
 
     /**
-     * Atualiza uma sala existente e sincroniza relacionamentos.
+     * Atualiza uma sala existente
      */
-    public function update(ClassRoom $classRoom, array $data): ClassRoom
+    public function update(int $id, array $data): ClassRoom
     {
+        $classRoom = $this->find($id);
+
         $classRoom->update([
             'name' => $data['name'],
             'capacity' => $data['capacity'],
@@ -69,28 +68,23 @@ class ClassRoomService
             'class_teacher_id' => $data['class_teacher_id'] ?? null,
         ]);
 
-        if (isset($data['subject_ids']) && is_array($data['subject_ids'])) {
-            $classRoom->subjects()->sync($data['subject_ids']);
-        } else {
-            $classRoom->subjects()->sync([]);
+        if (isset($data['teacher_ids'])) {
+            $classRoom->teachers()->sync($data['teacher_ids']);
         }
 
-        if (isset($data['teacher_ids']) && is_array($data['teacher_ids'])) {
-            $classRoom->teachers()->sync($data['teacher_ids']);
-        } else {
-            $classRoom->teachers()->sync([]);
+        if (isset($data['subject_ids'])) {
+            $classRoom->subjects()->sync($data['subject_ids']);
         }
 
         return $classRoom;
     }
 
     /**
-     * Remove uma sala e todos os relacionamentos pivot.
+     * Remove uma sala
      */
-    public function delete(ClassRoom $classRoom): bool
+    public function delete(int $id): bool
     {
-        $classRoom->subjects()->detach();
-        $classRoom->teachers()->detach();
+        $classRoom = $this->find($id);
         return $classRoom->delete();
     }
 }

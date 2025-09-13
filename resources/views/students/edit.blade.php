@@ -12,6 +12,10 @@
 <div class="createContainer">
     <h1 class="createTitle">Editar Aluno</h1>
 
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
     <form action="{{ route('students.update', $student->id) }}" method="POST" class="createForm">
         @csrf
         @method('PUT')
@@ -20,28 +24,28 @@
         $fields = [
             ['key' => 'name', 'label' => 'Nome', 'placeholder' => 'Digite o nome do aluno', 'type' => 'text'],
             ['key' => 'email', 'label' => 'Email', 'placeholder' => 'Digite o email', 'type' => 'email'],
-            ['key' => 'dateOfBirth', 'label' => 'Data de Nascimento', 'placeholder' => '', 'type' => 'date'],
-            ['key' => 'enrollmentNumber', 'label' => 'Matrícula', 'placeholder' => 'Número de matrícula', 'type' => 'text'],
+            ['key' => 'date_of_birth', 'label' => 'Data de Nascimento', 'placeholder' => '', 'type' => 'date'],
+            ['key' => 'enrollment_number', 'label' => 'Matrícula', 'placeholder' => 'Número de matrícula', 'type' => 'text'],
             ['key' => 'phone', 'label' => 'Telefone', 'placeholder' => 'Digite o telefone', 'type' => 'tel'],
             ['key' => 'address', 'label' => 'Endereço', 'placeholder' => 'Digite o endereço', 'type' => 'text'],
         ];
         @endphp
 
         @foreach($fields as $field)
-        <div class="formGroup">
-            <label for="{{ $field['key'] }}" class="formLabel">{{ $field['label'] }}</label>
-            <input
-                id="{{ $field['key'] }}"
-                name="{{ $field['key'] }}"
-                type="{{ $field['type'] }}"
-                value="{{ old($field['key'], $student->{$field['key']}) }}"
-                placeholder="{{ $field['placeholder'] }}"
-                class="formInput"
-            >
-            @error($field['key'])
-            <span class="formError">{{ $message }}</span>
-            @enderror
-        </div>
+            <div class="formGroup">
+                <label for="{{ $field['key'] }}" class="formLabel">{{ $field['label'] }}</label>
+                <input
+                    id="{{ $field['key'] }}"
+                    name="{{ $field['key'] }}"
+                    type="{{ $field['type'] }}"
+                    value="{{ old($field['key'], $student->{$field['key']}) }}"
+                    placeholder="{{ $field['placeholder'] }}"
+                    class="formInput @error($field['key']) formError @enderror"
+                >
+                @error($field['key'])
+                    <span class="formError">{{ $message }}</span>
+                @enderror
+            </div>
         @endforeach
 
         <div class="formActions">
@@ -50,3 +54,4 @@
         </div>
     </form>
 </div>
+@endsection

@@ -19,7 +19,7 @@ class StudentController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
-        $students = $this->studentService->searchByName($search);
+        $students = $this->studentService->paginate($search, 10);
 
         return view('students.index', compact('students'));
     }
@@ -48,7 +48,8 @@ class StudentController extends Controller
 
     public function show(Student $student)
     {
-        return view('students.show', compact('student'));
+        // Passa o aluno para a view details.blade.php
+        return view('students.details', compact('student'));
     }
 
     public function edit(Student $student)
