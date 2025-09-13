@@ -14,26 +14,20 @@
     <!-- CSS adicionais de páginas -->
     @stack('styles')
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body">
+    {{-- Navbar --}}
+    @include('components.navbar')
 
-    <!-- Container principal -->
-    <div id="app" class="flex-1 flex flex-col">
-
-        {{-- Navbar --}}
-        @include('components.navbar')
-
-        {{-- Conteúdo principal --}}
-        <main class="mainContainer flex-1 p-4">
+    {{-- Container principal --}}
+    <div class="container flex-1">
+        <main class="mainContainer">
             @yield('content')
         </main>
-
-        {{-- Footer --}}
-        @include('components.footer')
-
     </div>
 
-    <!-- Scripts adicionais -->
-    @stack('scripts')
+    {{-- Footer --}}
+    @include('components.footer')
 
+    @stack('scripts')
 </body>
 </html>

@@ -45,7 +45,7 @@
                         <td>{{ $subject->id }}</td>
                         <td>{{ $subject->name }}</td>
                         <td>{{ $subject->description }}</td>
-                        <td>{{ $subject->workloadHours }}</td>
+                        <td>{{ $subject->workload_hours }}</td>
                         <td class="actionsCell">
                             <a href="{{ route('subjects.show', $subject->id) }}" class="btn btnInfo">Detalhes</a>
                             <a href="{{ route('subjects.edit', $subject->id) }}" class="btn btnWarning">Editar</a>

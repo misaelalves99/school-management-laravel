@@ -22,7 +22,7 @@
                 id="name"
                 name="name"
                 value="{{ old('name') }}"
-                class="formInput"
+                class="formInput @error('name') is-invalid @enderror"
             />
             @error('name')
                 <span class="formError">{{ $message }}</span>
@@ -34,20 +34,27 @@
             <textarea
                 id="description"
                 name="description"
-                class="formInput"
+                class="formInput @error('description') is-invalid @enderror"
                 rows="3"
             >{{ old('description') }}</textarea>
+            @error('description')
+                <span class="formError">{{ $message }}</span>
+            @enderror
         </div>
 
         <div class="formGroup">
-            <label for="workloadHours" class="formLabel">Carga Horária</label>
+            <label for="workload_hours" class="formLabel">Carga Horária</label>
             <input
                 type="number"
-                id="workloadHours"
-                name="workloadHours"
-                value="{{ old('workloadHours', 0) }}"
-                class="formInput"
+                id="workload_hours"
+                name="workload_hours"
+                value="{{ old('workload_hours', 0) }}"
+                class="formInput @error('workload_hours') is-invalid @enderror"
+                min="1"
             />
+            @error('workload_hours')
+                <span class="formError">{{ $message }}</span>
+            @enderror
         </div>
 
         <div class="formActions">

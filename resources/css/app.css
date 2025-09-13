@@ -1,11 +1,108 @@
 /* resources/css/app.css */
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* Tipografia e fundo global */
+body {
+  font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  background: #f9fafb;
+  color: #111827;
+  margin: 0;
+  padding: 0;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+/* Container principal */
+.container {
+    min-height: 100vh;
+    padding-top: 80px; /* garante que o conteúdo não fique por baixo do navbar */
+}
+
+/* Main global */
+.mainContainer {
+    flex: 1;
+    padding: 2rem; /* ou ajuste conforme necessário */
+    box-sizing: border-box;
+}
+
+/* Footer fixo opcional */
+.footer {
+    padding: 1rem;
+    text-align: center;
+    background-color: #f3f4f6;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* resources/css/components/navbar.css */
+
+.navbar {
+  background-color: #004080;
+  padding: 0.75rem 1rem;
+  position: fixed; /* navbar fixa */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logo */
+.navbar-logo a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-text {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+/* Menu */
+.navbar-menu {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+}
+
+.navbar-menu li a {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.navbar-menu li a:hover,
+.navbar-menu li a.active {
+  color: #ffc107;
+  font-weight: 700;
+}
+
+.navbar-menu li a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: #ffc107;
+  transition: width 0.3s ease;
+}
+
+.navbar-menu li a:hover::after,
+.navbar-menu li a.active::after {
+  width: 100%;
 }
