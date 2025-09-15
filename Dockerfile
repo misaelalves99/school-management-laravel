@@ -1,7 +1,8 @@
+# Caminho: Dockerfile
 FROM php:8.2-apache
 
 # -----------------------------
-# Install system dependencies and Laravel extensions
+# Instalar dependências do sistema e extensões do Laravel
 # -----------------------------
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev libzip-dev unzip git curl \
@@ -10,50 +11,34 @@ RUN apt-get update && apt-get install -y \
     && a2enmod rewrite
 
 # -----------------------------
-# Install Composer
+# Instalar Composer
 # -----------------------------
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # -----------------------------
-# Set working directory
+# Definir diretório de trabalho
 # -----------------------------
 WORKDIR /var/www/html
 
 # -----------------------------
-# Copy project files
+# Copiar arquivos do projeto
 # -----------------------------
 COPY . .
 
 # -----------------------------
-# Configure Apache to serve Laravel /public
-# -----------------------------
-# Remove the default Apache config file
-RUN rm /etc/apache2/sites-enabled/000-default.conf
-
-# Copy and enable our custom Laravel config
-COPY laravel.conf /etc/apache2/sites-available/laravel.conf
-RUN a2ensite laravel.conf
-
-# -----------------------------
-# Permissions for storage and bootstrap/cache
+# Permissões para storage e bootstrap/cache
 # -----------------------------
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
 # -----------------------------
-# Install Laravel dependencies
+# Instalar dependências do Laravel
 # -----------------------------
 RUN composer install --no-dev --optimize-autoloader
 
 # -----------------------------
-# Run database migrations
+# Expor porta HTTP do Railway
 # -----------------------------
-RUN php artisan migrate --force
-
-# -----------------------------
-# Expose Railway HTTP port
-# -----------------------------
-ENV APACHE_LISTEN_PORT=8080
 EXPOSE 8080
 
 # -----------------------------
