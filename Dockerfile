@@ -56,4 +56,8 @@ EXPOSE 8080
 # -----------------------------
 # CMD final: roda Apache e passa a porta via argumento
 # -----------------------------
-CMD ["apache2-foreground"]
+# Make the script executable
+RUN chmod +x start.sh
+
+# CMD final: run the start script
+CMD ["./start.sh"]
