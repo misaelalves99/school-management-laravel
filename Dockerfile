@@ -42,6 +42,12 @@ RUN chown -R www-data:www-data storage bootstrap/cache \
 RUN composer install --no-dev --optimize-autoloader
 
 # -----------------------------
+# Executar migrações do banco de dados
+# O --force é necessário em ambientes de produção para rodar sem confirmação
+# -----------------------------
+RUN php artisan migrate --force
+
+# -----------------------------
 # Expor porta HTTP do Railway e usar a variável PORT
 # -----------------------------
 ENV APACHE_LISTEN_PORT=8080
