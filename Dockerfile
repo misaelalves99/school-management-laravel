@@ -26,7 +26,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # -----------------------------
-# DocumentRoot do Apache para Laravel /public
+# Configurar Apache para servir Laravel /public
 # -----------------------------
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
@@ -47,16 +47,14 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 RUN composer install --no-dev --optimize-autoloader
 
 # -----------------------------
-# Expor porta dinâmica do Railway
+# Expor porta HTTP do Railway
 # -----------------------------
 EXPOSE 8080
 
 # -----------------------------
-# CMD final: copia .env, gera APP_KEY, cache Laravel e roda Apache
+# CMD final: cache Laravel e roda Apache
 # -----------------------------
-CMD cp .env.example .env 2>/dev/null || true && \
-    php artisan key:generate --force && \
-    php artisan config:cache && \
+CMD php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
     apache2-foreground
