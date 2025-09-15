@@ -4,7 +4,7 @@
 FROM php:8.2-apache
 
 # ----------------------------
-# Instalar dependências e extensões do sistema
+# Instalar extensões e dependências do sistema
 # ----------------------------
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev libzip-dev unzip git curl \
@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # ----------------------------
-# Criar diretório de trabalho
+# Definir diretório de trabalho
 # ----------------------------
 WORKDIR /var/www/html
 
@@ -28,7 +28,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # ----------------------------
-# Copiar certificado do Aiven
+# Copiar certificado SSL do Aiven
 # ----------------------------
 COPY certs/ca.pem /etc/secrets/ca.pem
 
@@ -50,7 +50,7 @@ RUN chown -R www-data:www-data storage bootstrap/cache \
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # ----------------------------
-# Instalar dependências do Laravel
+# Instalar dependências Laravel
 # ----------------------------
 RUN composer install --no-dev --optimize-autoloader
 
