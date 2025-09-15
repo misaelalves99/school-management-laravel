@@ -26,11 +26,6 @@ COPY . .
 # Instalar dependências do Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Configurações do Laravel para produção
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
-
 # Permissões de pasta (storage e bootstrap/cache precisam ser graváveis)
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
@@ -38,5 +33,8 @@ RUN chown -R www-data:www-data storage bootstrap/cache \
 # Expor a porta do Apache
 EXPOSE 80
 
-# Comando inicial
-CMD ["apache2-foreground"]
+# Rodar caches só quando o container subir
+CMD php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache && \
+    apache2-foreground
