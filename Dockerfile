@@ -1,8 +1,7 @@
-# Caminho: Dockerfile
 FROM php:8.2-apache
 
 # -----------------------------
-# Instalar dependências do sistema e extensões do Laravel
+# Install system dependencies and Laravel extensions
 # -----------------------------
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev libzip-dev unzip git curl \
@@ -11,53 +10,54 @@ RUN apt-get update && apt-get install -y \
     && a2enmod rewrite
 
 # -----------------------------
-# Instalar Composer
+# Install Composer
 # -----------------------------
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # -----------------------------
-# Definir diretório de trabalho
+# Set working directory
 # -----------------------------
 WORKDIR /var/www/html
 
 # -----------------------------
-# Copiar arquivos do projeto
+# Copy project files
 # -----------------------------
 COPY . .
 
 # -----------------------------
-# Configurar Apache para servir Laravel /public
+# Configure Apache to serve Laravel /public
 # -----------------------------
-RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+# Remove the default Apache config file
+RUN rm /etc/apache2/sites-enabled/000-default.conf
+
+# Copy and enable our custom Laravel config
+COPY laravel.conf /etc/apache2/sites-available/laravel.conf
+RUN a2ensite laravel.conf
 
 # -----------------------------
-# Permissões para storage e bootstrap/cache
+# Permissions for storage and bootstrap/cache
 # -----------------------------
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
 # -----------------------------
-# Instalar dependências do Laravel
+# Install Laravel dependencies
 # -----------------------------
 RUN composer install --no-dev --optimize-autoloader
 
 # -----------------------------
-# Executar migrações do banco de dados
-# O --force é necessário em ambientes de produção para rodar sem confirmação
+# Run database migrations
 # -----------------------------
 RUN php artisan migrate --force
 
 # -----------------------------
-# Expor porta HTTP do Railway e usar a variável PORT
+# Expose Railway HTTP port
 # -----------------------------
 ENV APACHE_LISTEN_PORT=8080
 EXPOSE 8080
 
 # -----------------------------
-# CMD final: roda Apache e passa a porta via argumento
+# Final CMD: run the start script
 # -----------------------------
-# Make the script executable
 RUN chmod +x start.sh
-
-# CMD final: run the start script
 CMD ["./start.sh"]
