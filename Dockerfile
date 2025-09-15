@@ -37,24 +37,17 @@ RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
 # -----------------------------
-# Evitar warning de ServerName no Apache
-# -----------------------------
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-# -----------------------------
 # Instalar dependências do Laravel
 # -----------------------------
 RUN composer install --no-dev --optimize-autoloader
 
 # -----------------------------
-# Expor porta HTTP do Railway
+# Expor porta HTTP do Railway e usar a variável PORT
 # -----------------------------
+ENV APACHE_LISTEN_PORT=8080
 EXPOSE 8080
 
 # -----------------------------
-# CMD final: cache Laravel e roda Apache
+# CMD final: roda Apache e passa a porta via argumento
 # -----------------------------
-CMD php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache && \
-    apache2-foreground
+CMD ["apache2-foreground"]
