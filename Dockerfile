@@ -5,16 +5,15 @@ FROM php:8.2-apache
 # Instalar dependências do sistema e extensões necessárias do Laravel
 # ----------------------------------------
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    unzip \
-    git \
-    curl \
+    libpng-dev libjpeg-dev libfreetype6-dev libzip-dev unzip git curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql zip bcmath \
     && a2enmod rewrite
+
+# ----------------------------------------
+# Definir DocumentRoot do Apache para Laravel /public
+# ----------------------------------------
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 # ----------------------------------------
 # Instalar Composer
@@ -48,10 +47,9 @@ RUN chown -R www-data:www-data storage bootstrap/cache \
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # ----------------------------------------
-# Expor porta e rodar container
+# Expor porta e iniciar Apache + caches Laravel
 # ----------------------------------------
 EXPOSE 80
-
 CMD php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
