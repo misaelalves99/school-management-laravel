@@ -1,9 +1,0 @@
-{
-  "deployments": [
-    {
-      "name": "web",
-      "command": "apache2-foreground",
-      "service_port": 8080
-    }
-  ]
-}
