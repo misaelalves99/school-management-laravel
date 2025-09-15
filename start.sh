@@ -1,12 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
-# Run migrations to ensure the database is ready
+# Run database migrations
 php artisan migrate --force
 
 # Clear and cache configurations for production
-php artisan config:clear
 php artisan config:cache
 php artisan route:cache
 
+# Ensure Apache is configured to use port 8080
+echo "Listen 8080" >> /etc/apache2/ports.conf
+sed -i 's/:80>/:8080>/g' /etc/apache2/sites-available/*.conf
+sed -i 's/VirtualHost \*:80/VirtualHost \*:8080/g' /etc/apache2/sites-available/*.conf
+
 # Start Apache in the foreground
-exec apache2-foreground
+apache2-foreground

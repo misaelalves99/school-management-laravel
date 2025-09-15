@@ -57,7 +57,7 @@ ENV APACHE_LISTEN_PORT=8080
 EXPOSE 8080
 
 # -----------------------------
-# Final CMD: run the start script
+# CMD final: roda o start.sh
 # -----------------------------
 RUN chmod +x start.sh
 CMD ["./start.sh"]
