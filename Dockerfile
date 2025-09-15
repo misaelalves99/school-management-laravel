@@ -1,7 +1,7 @@
 # Caminho: Dockerfile
 FROM php:8.2-apache
 
-# Instalar dependências
+# Instalar dependências do sistema e PHP
 RUN apt-get update && apt-get install -y \
     libzip-dev zip unzip git \
     && docker-php-ext-install pdo pdo_mysql zip
@@ -15,16 +15,21 @@ RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available
 
 # Copiar projeto
 COPY . /var/www/html
-
 WORKDIR /var/www/html
 
 # Instalar composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Instalar dependências Laravel sem scripts
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-# Ajustar permissões (correto)
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Criar pastas necessárias e definir permissões
+RUN mkdir -p storage/framework/cache/data \
+    && mkdir -p storage/framework/sessions \
+    && mkdir -p storage/framework/views \
+    && mkdir -p storage/logs \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
 # Expor porta
 EXPOSE 8080
