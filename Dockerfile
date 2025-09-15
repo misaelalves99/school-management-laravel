@@ -1,38 +1,42 @@
 # Caminho: Dockerfile
 FROM php:8.2-apache
 
-# Instalar dependências do sistema e PHP
+# Instalar dependências do sistema e extensões necessárias do Laravel
 RUN apt-get update && apt-get install -y \
-    libzip-dev zip unzip git \
-    && docker-php-ext-install pdo pdo_mysql zip
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    unzip \
+    git \
+    curl \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_mysql zip bcmath \
+    && a2enmod rewrite
 
-# Ativar mod_rewrite
-RUN a2enmod rewrite
-
-# Definir DocumentRoot para a pasta public do Laravel
-RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf \
-    && sed -i 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf
-
-# Copiar projeto
-COPY . /var/www/html
-WORKDIR /var/www/html
-
-# Instalar composer
+# Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Instalar dependências Laravel sem scripts
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+# Definir diretório de trabalho
+WORKDIR /var/www/html
 
-# Criar pastas necessárias e definir permissões
-RUN mkdir -p storage/framework/cache/data \
-    && mkdir -p storage/framework/sessions \
-    && mkdir -p storage/framework/views \
-    && mkdir -p storage/logs \
-    && chown -R www-data:www-data storage bootstrap/cache \
+# Copiar arquivos do projeto
+COPY . .
+
+# Instalar dependências do Laravel
+RUN composer install --no-dev --optimize-autoloader
+
+# Configurações do Laravel para produção
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
+
+# Permissões de pasta (storage e bootstrap/cache precisam ser graváveis)
+RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Expor porta
-EXPOSE 8080
+# Expor a porta do Apache
+EXPOSE 80
 
-# Start Apache
+# Comando inicial
 CMD ["apache2-foreground"]
