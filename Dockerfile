@@ -57,11 +57,15 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 RUN git config --global --add safe.directory /var/www/html
 
 # ----------------------------
-# Porta do Apache
+# Porta dinâmica do Railway
 # ----------------------------
-EXPOSE 80
+ARG PORT=8080
+ENV APACHE_LISTEN_PORT=${PORT}
+RUN sed -i "s/80/${PORT}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
+
+EXPOSE ${PORT}
 
 # ----------------------------
-# CMD
+# Start Apache
 # ----------------------------
 CMD ["apache2-foreground"]
