@@ -23,10 +23,17 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # ----------------------------
-# Copiar composer e instalar dependências PHP
+# Criar pastas Laravel essenciais com permissão correta
+# ----------------------------
+RUN mkdir -p storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# ----------------------------
+# Copiar composer e instalar dependências PHP (sem rodar scripts ainda)
 # ----------------------------
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction
+RUN composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction --no-scripts
 
 # ----------------------------
 # Copiar o restante do projeto e certs
@@ -35,10 +42,10 @@ COPY . .
 COPY certs/ ./certs/
 
 # ----------------------------
-# Permissões e cache Laravel
+# Rodar artisan commands manualmente após copy (package:discover + cache)
 # ----------------------------
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache \
+RUN php artisan key:generate \
+    && php artisan package:discover \
     && php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache
