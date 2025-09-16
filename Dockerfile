@@ -29,9 +29,10 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction --no-scripts
 
 # ----------------------------
-# Copiar resto do projeto
+# Copiar resto do projeto e certs
 # ----------------------------
 COPY . .
+COPY certs/ ./certs/
 
 # ----------------------------
 # Apache: DocumentRoot e .htaccess

@@ -46,9 +46,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                // Caminho físico para o certificado SSL
-                PDO::MYSQL_ATTR_SSL_CA => env('DB_SSL_CA') ? base_path(env('DB_SSL_CA')) : null,
-                // Desabilita verificação do hostname do servidor
+                PDO::MYSQL_ATTR_SSL_CA => base_path(env('DB_SSL_CA')),
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
             ]) : [],
         ],
