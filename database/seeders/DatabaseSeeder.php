@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Cria usuário de teste apenas se não existir
+        User::updateOrCreate(
+            ['email' => 'test@example.com'], // chave única
+            [
+                'name' => 'Test User',
+                'password' => Hash::make('12345678'), // define senha segura
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Exemplo: criar mais usuários de teste usando factories
+        // User::factory(10)->create();
     }
 }
