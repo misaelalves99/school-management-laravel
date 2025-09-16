@@ -29,7 +29,7 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction --no-scripts
 
 # ----------------------------
-# Copiar resto do projeto e certificados
+# Copiar resto do projeto e certs
 # ----------------------------
 COPY . .
 COPY certs/ ./certs/
@@ -53,17 +53,16 @@ RUN chown -R www-data:www-data storage bootstrap/cache \
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # ----------------------------
-# Git safe directory
+# Git safe directory (Windows / Railway)
 # ----------------------------
 RUN git config --global --add safe.directory /var/www/html
 
 # ----------------------------
 # Porta dinâmica do Railway
 # ----------------------------
-ARG PORT=80
-ENV PORT=${PORT}
-RUN sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf \
-    && sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-available/000-default.conf
+ARG PORT=8080
+ENV APACHE_LISTEN_PORT=${PORT}
+RUN sed -i "s/80/${PORT}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 
 EXPOSE ${PORT}
 
