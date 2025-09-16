@@ -36,3 +36,7 @@ Route::get('enrollments/{enrollment}/delete', [EnrollmentController::class, 'del
 Route::fallback(function () {
     return redirect()->route('home');
 });
+
+Route::get('/healthz', function () {
+    return response()->json(['status' => 'ok']);
+});

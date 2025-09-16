@@ -46,8 +46,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                // SSL para Aiven ou outro provedor que exija
-                PDO::MYSQL_ATTR_SSL_CA => env('DB_SSL_CA') ? base_path(env('DB_SSL_CA')) : null,
+                PDO::MYSQL_ATTR_SSL_CA => base_path(env('DB_SSL_CA')),
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
             ]) : [],
         ],
