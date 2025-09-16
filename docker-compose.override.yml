@@ -1,6 +1,6 @@
 services:
   laravel:
-    # Monta o código do projeto no container
+    # Isso monta o código do projeto no container
     volumes:
       - .:/var/www/html
       - ./vendor:/var/www/html/vendor
