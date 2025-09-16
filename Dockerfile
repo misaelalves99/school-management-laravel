@@ -1,71 +1,67 @@
 # ----------------------------
-# Dockerfile Laravel 12 + PHP 8.2 (Railway-ready)
+# Base PHP + Apache
 # ----------------------------
 FROM php:8.2-apache
 
 # ----------------------------
-# Instalar extensões e dependências do sistema
+# Instalar extensões e dependências
 # ----------------------------
 RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev libfreetype6-dev libzip-dev unzip git curl \
+    libpng-dev libjpeg-dev libfreetype6-dev libzip-dev unzip git curl default-mysql-client \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql zip bcmath \
     && a2enmod rewrite
 
 # ----------------------------
-# Instalar Composer
+# Composer
 # ----------------------------
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # ----------------------------
-# Definir diretório de trabalho
+# Diretório de trabalho
 # ----------------------------
 WORKDIR /var/www/html
 
 # ----------------------------
-# Copiar todos os arquivos do projeto
+# Copiar composer e instalar dependências
+# ----------------------------
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction --no-scripts
+
+# ----------------------------
+# Copiar resto do projeto
 # ----------------------------
 COPY . .
 
 # ----------------------------
-# Copiar certificado SSL do Aiven
+# Apache: DocumentRoot e .htaccess
 # ----------------------------
-COPY certs/ca.pem /etc/secrets/ca.pem
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
+    && sed -i '/<Directory \/var\/www\/html>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf \
+    && a2enmod rewrite
 
 # ----------------------------
-# Ajustar DocumentRoot do Apache para /public
-# ----------------------------
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
-RUN a2enmod rewrite
-
-# ----------------------------
-# Permissões para storage e bootstrap/cache
+# Permissões
 # ----------------------------
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
 # ----------------------------
-# Evitar warning de ServerName
+# Evitar warning ServerName
 # ----------------------------
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # ----------------------------
-# Instalar dependências Laravel
+# Git safe directory (Windows / Railway)
 # ----------------------------
-RUN composer install --no-dev --optimize-autoloader
+RUN git config --global --add safe.directory /var/www/html
 
 # ----------------------------
-# Expor porta do Railway
+# Porta do Apache
 # ----------------------------
-EXPOSE 8080
+EXPOSE 80
 
 # ----------------------------
-# CMD final: limpar cache antigo, gerar cache novo e iniciar Apache
+# CMD
 # ----------------------------
-CMD php artisan config:clear && \
-    php artisan route:clear && \
-    php artisan view:clear && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache && \
-    apache2-foreground
+CMD ["apache2-foreground"]
